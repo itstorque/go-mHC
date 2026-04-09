@@ -1,6 +1,26 @@
 # go-mHC: Direct Parameterization of Manifold-Constrained Hyper-Connections
 
+[![arXiv](https://img.shields.io/badge/arXiv-2604.02309-b31b1b.svg)](https://arxiv.org/abs/2604.02309v1)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 This repository contains the official implementation of **go-mHC** (*generalized orthostochastic Manifold-Constrained Hyper-Connections*), as presented in the 2026 paper: ["go-mHC: Direct Parameterization of Manifold-Constrained Hyper-Connections via Generalized Orthostochastic Matrices"](https://arxiv.org/abs/2604.02309v1).
+
+<p align="center">
+  <img src="figure_1.png" width="800" alt="Spectral analysis and architectural integration">
+</p>
+
+## Table of Contents
+- [go-mHC: Direct Parameterization of Manifold-Constrained Hyper-Connections](#go-mhc-direct-parameterization-of-manifold-constrained-hyper-connections)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+    - [Key Advantages](#key-advantages)
+  - [Repository Structure](#repository-structure)
+  - [Getting Started](#getting-started)
+    - [1. Installation](#1-installation)
+    - [3. Reproducing main results](#3-reproducing-main-results)
+    - [3. Validating the Tiny Language Model](#3-validating-the-tiny-language-model)
+  - [Mathematical Procedure](#mathematical-procedure)
+  - [Citation](#citation)
 
 ## Overview
 
@@ -15,6 +35,21 @@ Learning how to mix information across residual streams is a powerful way to opt
 * **Expressivity / Spectral Coverage:** Spectral analysis demonstrates that go-mHC fills the Birkhoff polytope much more than Kronecker-factorized baselines.
 * **Convergence Speed:** In synthetic stream-mixing tasks, the method achieves the minimum theoretical loss while converging up to **10x faster** than existing baselines.
 * **Simplifies Implementation:** It requires **no custom CUDA kernels** and is implemented using standard, batched linear algebra operations available in common deep learning frameworks.
+
+<p align="center">
+  <img src="figure_8.png" width="400" alt="Convergence speed"><br/>
+  <img src="figure_4.png" width="700" alt="Spectral reach histogram"><br/>
+  <em>Top: Convergence speed vs baselines. Bottom: Spectral reach comparison.</em>
+</p>
+
+| Feature | mHC-lite | KromHC | **go-mHC (Ours)** |
+| :--- | :---: | :---: | :---: |
+| **Complexity (FLOPs)** | $\mathcal{O}(d!)$ | $\mathcal{O}(d \log d)$ | **$\mathcal{O}(d^3)$** |
+| **Parameter Count** | $\mathcal{O}(d^2)$ | $\mathcal{O}(d \log d)$ | **$\mathcal{O}(d^2s^2)$** |
+| **Constraint Type** | Exact | Exact | **Exact** |
+| **Normalization** | None | None | **None (By Construction)** |
+| **Expressivity** | Full | Low | **Tunable via $s$** |
+
 
 ---
 
@@ -60,12 +95,14 @@ python tiny_language_model/train.py tiny_language_model/config/with_go_mhc.py
 
 ## Mathematical Procedure
 
-The **go-mHC** pipeline maps a set of learnable parameters to a doubly stochastic matrix $B$ via:
-1. **Skew-Symmetric Mapping:** Parameters are mapped to a $ds \times ds$ skew-symmetric matrix.
-2. **Cayley Transform:** This generates an orthogonal matrix $Q$.
-3. **Frobenius Projection:** We compute $B_{ij} = \frac{1}{s}\|Q_{ij}\|_F^2$ to produce the final $d \times d$ matrix.
+The **go-mHC** mapping transforms learnable parameters $\Theta$ into a doubly stochastic matrix $B$ via:
 
-We propose using **$s=2$** for the best balance of performance and expressivity, and $s=1$ if expressivity is not needed. This can be used simultaneously with KromHC to improve the expressivity of KromHC with negligible cost.
+1. **Skew-Symmetric Mapping**: $A = \Theta - \Theta^T$ where $A \in \mathbb{R}^{ds \times ds}$.
+2. **Cayley Transform**: $Q = (I - A)(I + A)^{-1}$ to obtain an orthogonal matrix $Q$.
+3. **Frobenius Projection**: Compute the $d \times d$ matrix $B$ by averaging squared entries in $s \times s$ blocks:
+   $$B_{ij} = \frac{1}{s} \sum_{k=1}^{s} \sum_{l=1}^{s} |Q_{(i,k),(j,l)}|^2$$
+
+*Note: We recommend **$s=2$** for the best balance of expressivity and FLOPs.* This can be used simultaneously with KromHC to improve the expressivity of KromHC with negligible cost.
 
 ---
 
