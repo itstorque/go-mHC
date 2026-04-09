@@ -41,15 +41,19 @@ Learning how to mix information across residual streams is a powerful way to opt
   <img src="figure_4.png" width="700" alt="Spectral reach histogram"><br/>
   <em>Top: Convergence speed vs baselines. Bottom: Spectral reach comparison.</em>
 </p>
+<br/><br/>
+<div align="center">
 
-| Feature | mHC-lite | KromHC | **go-mHC (Ours)** |
+|  | mHC-lite | KromHC | **go-mHC (Ours)** |
 | :--- | :---: | :---: | :---: |
-| **Complexity (FLOPs)** | $\mathcal{O}(d!)$ | $\mathcal{O}(d \log d)$ | **$\mathcal{O}(d^3)$** |
-| **Parameter Count** | $\mathcal{O}(d^2)$ | $\mathcal{O}(d \log d)$ | **$\mathcal{O}(d^2s^2)$** |
+| **Complexity (FLOPs)** | `O(d!)` | `O(d log d)` | **`O(d³)`** |
+| **Parameter Count** | `O(d²)` | `O(d log d)` | **`O(d²s²)`** |
 | **Constraint Type** | Exact | Exact | **Exact** |
 | **Normalization** | None | None | **None (By Construction)** |
-| **Expressivity** | Full | Low | **Tunable via $s$** |
+| **Expressivity** | Full | Low | **Tunable via s** |
 
+</div>
+<br/><br/>
 
 ---
 
