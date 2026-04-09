@@ -1,7 +1,7 @@
 # go-mHC: Direct Parameterization of Manifold-Constrained Hyper-Connections
 
 [![arXiv](https://img.shields.io/badge/arXiv-2604.02309-b31b1b.svg)](https://arxiv.org/abs/2604.02309v1)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 This repository contains the official implementation of **go-mHC** (*generalized orthostochastic Manifold-Constrained Hyper-Connections*), as presented in the 2026 paper: ["go-mHC: Direct Parameterization of Manifold-Constrained Hyper-Connections via Generalized Orthostochastic Matrices"](https://arxiv.org/abs/2604.02309v1).
 
